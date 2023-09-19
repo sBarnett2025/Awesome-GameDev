@@ -3,14 +3,15 @@ using namespace std;
 
 int CountNeighbors(bool** buffer, int worldX, int worldY, int sizeX, int sizeY);
 bool GetPoint(bool** buffer, int x, int y, int sizeX, int sizeY);
+void SetNextPoint(bool** buffer, int x, int y, bool value);
 
 int main(){
 
-  int sizeX = 4, sizeY = 4, numberOfSteps = 2;
+  int sizeX = 0, sizeY = 0, numberOfSteps = 0;
 
   // input from file--------------------------------------------------------------------------------
   string temp;
-  //cin >> sizeX >> sizeY >> numberOfSteps;
+  cin >> sizeX >> sizeY >> numberOfSteps;
 
   // make buffers
   bool** currentBuffer = new bool*[sizeX];
@@ -57,14 +58,25 @@ int main(){
       {
         // check neighbors
         int neighbors = CountNeighbors(currentBuffer, x, y, sizeX, sizeY);
-
         // check overpopulation
         if (GetPoint(currentBuffer, x, y, sizeX, sizeY) && neighbors >= 4)
+        {
+          SetNextPoint(nextBuffer, x, y, false);
+        }
+
+        // check underpopulation
+        if (GetPoint(currentBuffer, x, y, sizeX, sizeY) && neighbors <= 1)
+        {
+          SetNextPoint(nextBuffer, x, y, false);
+        }
+
+        // check repopulation
+        if (!GetPoint(currentBuffer, x, y, sizeX, sizeY) && neighbors == 3)
         {
 
         }
 
-
+        SetNextPoint(nextBuffer, x, y, true);
       }
 
     }
@@ -119,5 +131,8 @@ bool GetPoint(bool** buffer, int x, int y, int xSize, int ySize)
   return value;
 }
 
-
+void SetNextPoint(bool** buffer, int x, int y, bool value)
+{
+  buffer[x][y] = value;
+}
 
