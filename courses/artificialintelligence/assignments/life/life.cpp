@@ -4,6 +4,7 @@ using namespace std;
 int CountNeighbors(bool** buffer, int worldX, int worldY, int sizeX, int sizeY);
 bool GetPoint(bool** buffer, int x, int y, int sizeX, int sizeY);
 void SetNextPoint(bool** buffer, int x, int y, bool value);
+void SwitchBuffers(bool** current, bool** next, int sizeX, int sizeY);
 
 int main(){
 
@@ -26,6 +27,7 @@ int main(){
     nextBuffer[i] = new bool[sizeY];
   }
 
+  // continue reading-------------------------------------------------------------------------------
   for (int y = 0; y < sizeY; y++)
   {
     cin >> temp;
@@ -58,31 +60,35 @@ int main(){
       {
         // check neighbors
         int neighbors = CountNeighbors(currentBuffer, x, y, sizeX, sizeY);
+        bool alive = GetPoint(currentBuffer, x, y, sizeX, sizeY);
+
+        // Game Rules-------------------------------------------------------------------------------
+
         // check overpopulation
-        if (GetPoint(currentBuffer, x, y, sizeX, sizeY) && neighbors >= 4)
+        if (alive && neighbors >= 4)
         {
-          SetNextPoint(nextBuffer, x, y, false);
+          alive = false;
         }
 
         // check underpopulation
-        if (GetPoint(currentBuffer, x, y, sizeX, sizeY) && neighbors <= 1)
+        if (alive && neighbors <= 1)
         {
-          SetNextPoint(nextBuffer, x, y, false);
+          alive = false;
         }
 
         // check repopulation
-        if (!GetPoint(currentBuffer, x, y, sizeX, sizeY) && neighbors == 3)
+        if (!alive && neighbors == 3)
         {
-
+          alive = true;
         }
 
-        SetNextPoint(nextBuffer, x, y, true);
+        SetNextPoint(nextBuffer, x, y, alive);
       }
 
     }
 
     // switch buffers
-
+    SwitchBuffers(currentBuffer, nextBuffer, sizeX, sizeY);
   }
 
   // print final result-----------------------------------------------------------------------------
@@ -102,29 +108,29 @@ int main(){
 int CountNeighbors(bool** buffer, int worldX, int worldY, int sizeX, int sizeY)
 {
   int count = 0;
-  for (int y = -1; y <= 1; y++)
+  for (int localY = -1; localY <= 1; localY++)
   {
-    for (int x = -1; x <= 1; x++)
+    for (int localX = -1; localX <= 1; localX++)
     {
-      if (x == 0 && y == 0)
+      if (localX == 0 && localY == 0)
       {
         continue;
       }
 
-      count += GetPoint(buffer, worldX + x, worldY + y, sizeX, sizeY)?1:0;
+      count += GetPoint(buffer, worldX + localX, worldY + localY, sizeX, sizeY)?1:0;
     }
   }
   return count;
 }
 
-bool GetPoint(bool** buffer, int x, int y, int xSize, int ySize)
+bool GetPoint(bool** buffer, int x, int y, int sizeX, int sizeY)
 {
   bool value = false;
 
-  if (x < 0) x += xSize;
-  if (x >= xSize) x %= xSize;
-  if (y < 0) y += ySize;
-  if (y >= ySize) y %= ySize;
+  if (x < 0) x += sizeX;
+  if (x >= sizeX) x %= sizeX;
+  if (y < 0) y += sizeY;
+  if (y >=  sizeY) y %= sizeY;
 
   value = buffer[x][y];
 
@@ -136,3 +142,13 @@ void SetNextPoint(bool** buffer, int x, int y, bool value)
   buffer[x][y] = value;
 }
 
+void SwitchBuffers(bool** current, bool** next, int sizeX, int sizeY)
+{
+  for (int x = 0; x < sizeX; x++)
+  {
+    for (int y = 0; y < sizeY; y++)
+    {
+      current[x][y] = next[x][y];
+    }
+  }
+}
