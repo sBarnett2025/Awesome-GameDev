@@ -205,7 +205,7 @@ void PrintMaze(const vector<bool>& hori, const vector<bool>& vert, int xSize, in
   {
     cout << " _";
   }
-  cout << endl;
+  cout << "  " << endl;
   for (int y = 0; y < ySize; y++)
   {
     vertNow = true;
@@ -226,7 +226,7 @@ void PrintMaze(const vector<bool>& hori, const vector<bool>& vert, int xSize, in
         horiCounter++;
       }
     }
-    cout << endl;
+    cout << " " << endl;
 
   }
 }
