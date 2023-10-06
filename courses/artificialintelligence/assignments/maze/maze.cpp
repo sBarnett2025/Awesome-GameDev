@@ -10,6 +10,7 @@ struct point
   int y;
 };
 
+
 vector<point> GetNeighbors(const vector<bool>& data, const vector<bool>& visited, point p, int xSize, int ySize);
 bool PointValid(point p, int xSize, int ySize);
 int GetRand(int pool[], int& index);
@@ -37,23 +38,23 @@ int main()
   // user input
   cin >> xSize >> ySize >> randIndex;
 
-  data.reserve(xSize * ySize);
-  visited.reserve(xSize * ySize);
-  horizontals.reserve(xSize * (ySize + 1));
-  verticals.reserve((xSize + 1) * ySize);
+  //data.reserve(xSize * ySize);
+  //visited.reserve(xSize * ySize);
+  //horizontals.reserve(xSize * (ySize + 1));
+  //verticals.reserve((xSize + 1) * ySize);
 
   for (int i = 0; i < xSize * ySize; i++)
   {
-    data[i] = true;
-    visited[i] = false;
+    data.push_back(true);
+    visited.push_back(false);
   }
   for (int i = 0; i < xSize * (ySize + 1); i++)
   {
-    horizontals[i] = true;
+    horizontals.push_back(true);
   }
   for (int i = 0; i < (xSize + 1) * ySize; i++)
   {
-    verticals[i] = true;
+    verticals.push_back(true);
   }
 
   // do loop
