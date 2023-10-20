@@ -2,6 +2,44 @@
 
 std::pair<int,int> Cat::move(const std::vector<bool>& world, std::pair<int,int> catPos, int sideSize )
 {
+  Point2D start = catPos;
+  std::priority_queue<Point2D> frontier;
+  frontier.emplace(start);
+  std::unordered_map<Point2D, Point2D> cameFrom;
+  std::unordered_map<Point2D, int> costSoFar;
+  cameFrom[start] = ;
+  costSoFar[start] = 0;
+
+
+  while (!frontier.empty())
+  {
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   bool solutionFound = false;
   bool firstLoop = true;
 

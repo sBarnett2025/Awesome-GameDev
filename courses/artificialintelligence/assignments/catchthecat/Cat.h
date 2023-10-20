@@ -4,6 +4,33 @@
 #include <queue>
 #include <unordered_map>
 #include <iostream>
+#include <stdint.h>
+
+struct Point2D
+{
+  int32_t x;
+  int32_t y;
+
+  Point2D(int32_t x, int32_t y): x(x), y(y) {}
+  Point2D(const std::pair<int32_t,int32_t>& p): x(p.first), y(p.second) {}
+  uint64_t hash() const noexcept { return ((uint64_t)x) << 32 | (uint64_t)y; }
+  bool operator < (const Point2D& p) const { return x < p.x || (x == p.x && y < p.y); }
+};
+
+namespace std {
+  template <> struct hash<Point2D> {
+    std::size_t operator()(const Point2D& p) const noexcept { return p.hash(); }
+  };
+}
+
+struct AStarNode {
+  Point2D pos;
+  float accumulatedCost;
+  float heurisitic;
+  bool operator < (const AStarNode& n) const{
+    return this->accumulatedCost + this->heurisitic < n.accumulatedCost + n.heurisitic;
+  }
+};
 
 struct tileData
 {
