@@ -2,22 +2,40 @@
 
 std::pair<int,int> Cat::move(const std::vector<bool>& world, std::pair<int,int> catPos, int sideSize )
 {
-  Point2D start = catPos;
-  std::priority_queue<Point2D> frontier;
-  frontier.emplace(start);
-  std::unordered_map<Point2D, Point2D> cameFrom;
-  std::unordered_map<Point2D, int> costSoFar;
-  cameFrom[start] = ;
-  costSoFar[start] = 0;
+  Position start = catPos;
+  Position exitAt = start;
+  std::priority_queue<AStarNode> frontier;
+  std::unordered_map<Position, Position> cameFrom;
+  std::vector<Position> path;
+  cameFrom[start] = start;
 
-
+  float catDisToEdge = getDistanceToEdge(start, sideSize);
+  frontier.push({start, 0, catDisToEdge});
   while (!frontier.empty())
   {
+    auto current = frontier.top();
+    frontier.pop();
 
+    if (catWinsOnSpace(current.pos, sideSize))
+    {
+      exitAt = current.pos;
+      break;
+    }
+    // auto neighbors = get neighbors-------------------------------------
+    for (const auto& neighbor : neighbors)
+    {
+      if (neighbor != start && !cameFrom.contains(neighbor))
+      {
+        frontier.push({neighbor, current.accumulatedCost + 1, getDistanceToEdge(neighbor, sideSize)});
+        cameFrom[neighbor] = current.pos;
+      }
+    }
+  }
 
-
-
-
+  while (exitAt != start)
+  {
+    path.push_back(exitAt);
+    exitAt = cameFrom[exitAt];
   }
 
 
@@ -26,20 +44,7 @@ std::pair<int,int> Cat::move(const std::vector<bool>& world, std::pair<int,int> 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*
   bool solutionFound = false;
   bool firstLoop = true;
 
@@ -134,11 +139,21 @@ std::pair<int,int> Cat::move(const std::vector<bool>& world, std::pair<int,int> 
       }
     }
   }
-
-  return bestPoint;
+*/
+  //return bestPoint;
 }
 
-
+float Cat::getDistanceToEdge(Position p, int sidesize)
+{
+  if (abs(p.y)>abs(p.x))
+  {
+    return sidesize/2 - abs(p.y);
+  }
+  else
+  {
+    return sidesize/2 - abs(p.x);
+  }
+}
 
 
 bool Cat::updateMaps(std::vector<tileData>& map, std::queue<std::pair<int,int>>& q, std::vector<bool>& visited,
@@ -186,10 +201,10 @@ bool Cat::isValidPos(std::pair<int,int> point, int sideSize)
   return (point.first >= -half) && (point.first <= half) && (point.second >= -half) && (point.second <= half);
 }
 
-bool Cat::catWinsOnSpace(std::pair<int,int> point, int sideSize)
+bool Cat::catWinsOnSpace(Position point, int sideSize)
 {
   auto sideOver2 = sideSize / 2;
-  return abs(point.first) == sideOver2 || abs(point.second) == sideOver2;
+  return abs(point.x) == sideOver2 || abs(point.y) == sideOver2;
 }
 
 int Cat::howManyValidNeighbors(const std::vector<bool>& world, std::pair<int,int> point, int sideSize)
